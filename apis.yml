@@ -1,87 +1,50 @@
+aid: celery
+url: >-
+  https://raw.githubusercontent.com/api-evangelist/celery/refs/heads/main/apis.yml
 name: Celery
-description: Distributed Task Queue for Python
-url: https://docs.celeryq.dev/
-image: https://docs.celeryq.dev/en/stable/_static/celery_512.png
-created: 2024-01-15 00:00:00+00:00
-modified: 2024-01-15 00:00:00+00:00
 tags:
-- Task Queue
-- Distributed Systems
-- Python
-- Asynchronous
-- Message Queue
-- Workers
-apis:
-- name: Celery Task API
-  description: Core API for defining and executing distributed tasks
-  humanURL: https://docs.celeryq.dev/en/stable/userguide/tasks.html
-  baseURL: N/A
-  tags:
-  - Tasks
-  - Execution
+  - Task Queue
+  - Distributed Systems
+  - Python
   - Asynchronous
-  properties:
+  - Message Queue
+type: Index
+image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+access: 3rd-Party
+created: '2024-01-15'
+modified: '2026-03-16'
+position: Consumer
+description: >-
+  Celery is a distributed task queue for Python. It allows you to run tasks
+  asynchronously in the background, enabling you to build scalable distributed
+  systems with ease. Celery supports multiple message brokers including
+  RabbitMQ and Redis.
+apis:
+  - aid: celery:celery-task-api
+    name: Celery Task API
+    tags:
+      - Task Queue
+      - Python
+    humanURL: https://docs.celeryq.dev/en/stable/userguide/tasks.html
+    properties:
+      - url: https://docs.celeryq.dev/en/stable/
+        type: Documentation
+      - url: https://docs.celeryq.dev/en/stable/getting-started/
+        type: Getting Started
+    description: >-
+      Core API for defining and executing distributed tasks in Celery.
+common:
+  - type: Website
+    url: https://docs.celeryq.dev/
   - type: Documentation
     url: https://docs.celeryq.dev/en/stable/
-  - type: Getting Started
-    url: https://docs.celeryq.dev/en/stable/getting-started/
-  - type: User Guide
-    url: https://docs.celeryq.dev/en/stable/userguide/
-- name: Celery Application API
-  description: Application configuration and initialization API
-  humanURL: https://docs.celeryq.dev/en/stable/userguide/application.html
-  baseURL: N/A
-  tags:
-  - Application
-  - Configuration
-  - Initialization
-  properties:
-  - type: Documentation
-    url: https://docs.celeryq.dev/en/stable/userguide/application.html
-  - type: Configuration Reference
-    url: https://docs.celeryq.dev/en/stable/userguide/configuration.html
-- name: Celery Canvas API
-  description: API for creating complex workflows with task signatures, chains, groups, and chords
-  humanURL: https://docs.celeryq.dev/en/stable/userguide/canvas.html
-  baseURL: N/A
-  tags:
-  - Workflows
-  - Chains
-  - Groups
-  - Chords
-  - Signatures
-  properties:
-  - type: Documentation
-    url: https://docs.celeryq.dev/en/stable/userguide/canvas.html
-- name: Celery Result Backend API
-  description: API for storing and retrieving task results
-  humanURL: https://docs.celeryq.dev/en/stable/userguide/tasks.html#result-backends
-  baseURL: N/A
-  tags:
-  - Results
-  - Storage
-  - State
-  properties:
-  - type: Documentation
-    url: https://docs.celeryq.dev/en/stable/userguide/tasks.html#result-backends
+  - type: GitHub Organization
+    url: https://github.com/celery/celery
+  - type: Change Log
+    url: https://docs.celeryq.dev/en/stable/changelog.html
+  - type: Community
+    url: https://github.com/celery/celery/discussions
 maintainers:
-- name: Celery Project
-  email: N/A
-  url: https://github.com/celery/celery
-common:
-- type: GitHub Repository
-  url: https://github.com/celery/celery
-- type: PyPI Package
-  url: https://pypi.org/project/celery/
-- type: Community
-  url: https://github.com/celery/celery/discussions
-- type: Issues
-  url: https://github.com/celery/celery/issues
-- type: Change Log
-  url: https://docs.celeryq.dev/en/stable/changelog.html
-- type: Contributing Guide
-  url: https://docs.celeryq.dev/en/stable/contributing.html
-- type: Twitter
-  url: https://twitter.com/celeryproject
-- type: Mailing List
-  url: https://groups.google.com/group/celery-users
+  - FN: Kin Lane
+    email: kin@apievangelist.com
+specificationVersion: '0.19'
