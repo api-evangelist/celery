@@ -3,11 +3,11 @@ url: >-
   https://raw.githubusercontent.com/api-evangelist/celery/refs/heads/main/apis.yml
 name: Celery
 tags:
-  - Task Queue
-  - Distributed Systems
-  - Python
   - Asynchronous
+  - Distributed Systems
   - Message Queue
+  - Python
+  - Task Queue
 type: Index
 image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
 access: 3rd-Party
@@ -23,8 +23,8 @@ apis:
   - aid: celery:celery-task-api
     name: Celery Task API
     tags:
-      - Task Queue
       - Python
+      - Task Queue
     humanURL: https://docs.celeryq.dev/en/stable/userguide/tasks.html
     properties:
       - url: https://docs.celeryq.dev/en/stable/
