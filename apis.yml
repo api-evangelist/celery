@@ -149,6 +149,8 @@ apis:
       queues. Supports the curses-based celery events monitor and third-party
       tools such as Flower.
 common:
+  - type: DomainSecurity
+    url: security/celery-domain-security.yml
   - type: Website
     url: https://docs.celeryq.dev/
   - type: Documentation
