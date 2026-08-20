@@ -5,6 +5,13 @@ tags:
   - Asynchronous
   - Distributed Systems
   - Message Queue
+  - Open-Source
+  - Python
+  - Task Queue
+tags_raw:
+  - Asynchronous
+  - Distributed Systems
+  - Message Queue
   - Open Source
   - Python
   - Task Queue
@@ -40,6 +47,10 @@ apis:
     tags:
       - Python
       - Task Queue
+      - Task
+    tags_raw:
+      - Python
+      - Task Queue
       - Tasks
     humanURL: https://docs.celeryq.dev/en/stable/userguide/tasks.html
     properties:
@@ -71,6 +82,11 @@ apis:
   - aid: celery:celery-canvas-api
     name: Celery Canvas API
     tags:
+      - Workflows
+      - Chains
+      - Group
+      - Chords
+    tags_raw:
       - Workflows
       - Chains
       - Groups
@@ -118,6 +134,10 @@ apis:
     name: Celery Result Backend API
     tags:
       - Results
+      - States
+      - Storage
+    tags_raw:
+      - Results
       - State
       - Storage
     humanURL: https://docs.celeryq.dev/en/stable/userguide/tasks.html#result-backends
@@ -133,6 +153,10 @@ apis:
     name: Celery Signals API
     tags:
       - Signals
+      - Event
+      - Extensions
+    tags_raw:
+      - Signals
       - Events
       - Extensions
     humanURL: https://docs.celeryq.dev/en/stable/userguide/signals.html
@@ -147,6 +171,10 @@ apis:
   - aid: celery:celery-monitoring-api
     name: Celery Monitoring and Events API
     tags:
+      - Monitoring
+      - Event
+      - Observability
+    tags_raw:
       - Monitoring
       - Events
       - Observability
