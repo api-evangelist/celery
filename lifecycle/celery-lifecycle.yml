@@ -1,0 +1,81 @@
+generated: '2026-09-05'
+method: searched
+source: >-
+  https://docs.celeryq.dev/en/stable/internals/deprecation.html,
+  https://github.com/celery/celery/blob/main/SECURITY.md,
+  https://github.com/celery/celery/releases,
+  https://docs.celeryq.dev/en/stable/changelog.html
+versioning:
+  scheme: MAJOR.MINOR.PATCH
+  current_version: 5.6.3
+  current_released: '2026-03-26'
+  docs_channel: >-
+    Documentation is published per series at docs.celeryq.dev/en/stable/ (current stable) with a
+    separate development channel; every page carries a "This document describes the current stable
+    version of Celery (5.6)" banner linking to the development docs.
+  in_url: false
+  note: >-
+    Version is selected by the pinned package version, not by a URL path or request header — there
+    is no wire API to version.
+deprecation:
+  policy_published: true
+  policy_url: https://docs.celeryq.dev/en/stable/internals/deprecation.html
+  title: Celery Deprecation Time-line
+  form: >-
+    A published, per-major-version removal time-line. It names each symbol scheduled for removal and
+    the release that removes it, and gives the migration for each — e.g. `celery.decorators` and
+    `celery.task` removed in 5.0, with `from celery import shared_task` as the replacement; the old
+    classmethod-based Task API (MyTask.delay) removed in favour of instantiating the task.
+  sunset_headers: na — no HTTP surface, so RFC 8594 Sunset/Deprecation headers do not apply
+  runtime_signal: >-
+    Deprecations are signalled in-process by CDeprecationWarning and CPendingDeprecationWarning
+    (celery.exceptions), which is the library-native equivalent of a Deprecation header.
+  sections:
+    - Removals for version 5.0 (old Task API, compat task modules, task attributes, modules, settings, BROKER_* settings, REDIS result-backend settings, task_sent signal)
+    - Removals for version 2.0
+support:
+  policy_url: https://github.com/celery/celery/blob/main/SECURITY.md
+  form: >-
+    SECURITY.md publishes a Supported Versions table. As checked 2026-09-05 the table still lists
+    5.4.x as the only supported line and marks 5.3.x and below unsupported — it has not been updated
+    for the 5.5/5.6 series that shipped since, so the published support matrix is stale relative to
+    the releases.
+  supported_versions_as_published:
+    - version: 5.4.x
+      supported: true
+    - version: 5.3.x
+      supported: false
+    - version: 5.2.x
+      supported: false
+    - version: 5.1.x
+      supported: false
+    - version: '<5.0'
+      supported: false
+status_page:
+  published: false
+  note: >-
+    No status page. Celery is a library the consumer runs on their own infrastructure; there is no
+    hosted service whose availability could be reported. Correctly N/A, not a gap.
+sla:
+  published: false
+  note: Open-source project, BSD-3-Clause, no service level commitment.
+release_cadence:
+  recent:
+    - version: 5.6.3
+      date: '2026-03-26'
+    - version: 5.6.2
+      date: '2026-01-04'
+    - version: 5.6.1
+      date: '2025-12-29'
+    - version: 5.6.0
+      date: '2025-11-30'
+    - version: 5.6.0rc2
+      date: '2025-11-22'
+    - version: 5.6.0rc1
+      date: '2025-11-01'
+  note: Release candidates are published before each minor, giving consumers a pre-release window.
+enhancement_process:
+  published: true
+  url: https://github.com/celery/ceps
+  form: Celery Enhancement Proposals (CEPs) — the public design/roadmap process for the project.
+deprecated_operations: []

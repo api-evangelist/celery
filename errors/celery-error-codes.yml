@@ -1,0 +1,166 @@
+generated: '2026-09-05'
+method: searched
+source: https://docs.celeryq.dev/en/stable/reference/celery.exceptions.html
+format: python-exception-hierarchy
+note: >-
+  Celery ships no HTTP surface, so there is no RFC 9457 problem+json envelope and no numeric error
+  registry. Its published error contract is the `celery.exceptions` hierarchy — Python exception
+  classes raised to callers and workers, transcribed verbatim from the API reference. Transport
+  failures surface as kombu.exceptions.OperationalError, which deliberately does NOT inherit from
+  CeleryError; pool failures come from billiard.
+envelope:
+  kind: python-exception
+  base: celery.exceptions.CeleryError
+  transport_base: kombu.exceptions.KombuError
+  pool_base: billiard (prefork pool exceptions)
+  warning_base: celery.exceptions.CeleryWarning
+errors:
+  - code: CeleryError
+    title: Base class for all Celery errors.
+    class: celery.exceptions.CeleryError
+    category: base
+  - code: ImproperlyConfigured
+    title: Celery is somehow improperly configured.
+    class: celery.exceptions.ImproperlyConfigured
+    category: configuration
+    remediation: Check the app configuration module and the settings named in the traceback.
+  - code: SecurityError
+    title: Security related exception.
+    class: celery.exceptions.SecurityError
+    category: security
+  - code: TaskPredicate
+    title: Base class for task-related semi-predicates.
+    class: celery.exceptions.TaskPredicate
+    category: base
+  - code: Ignore
+    title: A task can raise this to ignore doing state updates.
+    class: celery.exceptions.Ignore
+    category: control-flow
+  - code: Reject
+    title: A task can raise this if it wants to reject/re-queue the message.
+    class: celery.exceptions.Reject
+    category: control-flow
+    signature: Reject(reason=None, requeue=False)
+  - code: Retry
+    title: The task is to be retried later.
+    class: celery.exceptions.Retry
+    category: control-flow
+    signature: Retry(message=None, exc=None, when=None, is_eager=False, sig=None, **kwargs)
+  - code: TaskError
+    title: Task related errors.
+    class: celery.exceptions.TaskError
+    category: base
+  - code: QueueNotFound
+    title: Task routed to a queue not in conf.queues.
+    class: celery.exceptions.QueueNotFound
+    category: routing
+  - code: IncompleteStream
+    title: Found the end of a stream of data, but the data isn't complete.
+    class: celery.exceptions.IncompleteStream
+    category: results
+  - code: NotRegistered
+    title: The task is not registered.
+    class: celery.exceptions.NotRegistered
+    category: registry
+  - code: AlreadyRegistered
+    title: The task is already registered.
+    class: celery.exceptions.AlreadyRegistered
+    category: registry
+  - code: TimeoutError
+    title: The operation timed out.
+    class: celery.exceptions.TimeoutError
+    category: timeout
+  - code: MaxRetriesExceededError
+    title: The tasks max restart limit has been exceeded.
+    class: celery.exceptions.MaxRetriesExceededError
+    category: retry
+  - code: TaskRevokedError
+    title: The task has been revoked, so no result available.
+    class: celery.exceptions.TaskRevokedError
+    category: revocation
+  - code: InvalidTaskError
+    title: The task has invalid data or ain't properly constructed.
+    class: celery.exceptions.InvalidTaskError
+    category: message
+  - code: ChordError
+    title: A task part of the chord raised an exception.
+    class: celery.exceptions.ChordError
+    category: canvas
+  - code: BackendError
+    title: An issue writing or reading to/from the backend.
+    class: celery.exceptions.BackendError
+    category: result-backend
+  - code: BackendGetMetaError
+    title: An issue reading from the backend.
+    class: celery.exceptions.BackendGetMetaError
+    category: result-backend
+  - code: BackendStoreError
+    title: An issue writing to the backend.
+    class: celery.exceptions.BackendStoreError
+    category: result-backend
+  - code: OperationalError
+    title: Recoverable message transport connection error.
+    class: celery.exceptions.OperationalError
+    category: transport
+    note: >-
+      Raised when a transport connection error occurs while sending a message (task or remote
+      control command). Documented as NOT inheriting from CeleryError — it comes from
+      kombu.exceptions.KombuError, so `except CeleryError` will not catch it.
+  - code: SoftTimeLimitExceeded
+    title: The soft time limit has been exceeded; raised to give the task a chance to clean up.
+    class: celery.exceptions.SoftTimeLimitExceeded
+    category: timeout
+  - code: TimeLimitExceeded
+    title: The time limit has been exceeded and the job has been terminated.
+    class: celery.exceptions.TimeLimitExceeded
+    category: timeout
+  - code: WorkerLostError
+    title: The worker processing a job has exited prematurely.
+    class: celery.exceptions.WorkerLostError
+    category: worker
+  - code: Terminated
+    title: The worker processing a job has been terminated by user request.
+    class: celery.exceptions.Terminated
+    category: worker
+  - code: CeleryCommandException
+    title: A general command exception which stores an exit code.
+    class: celery.exceptions.CeleryCommandException
+    category: cli
+    signature: CeleryCommandException(message, exit_code)
+  - code: WorkerShutdown
+    title: Signals that the worker should perform a warm shutdown.
+    class: celery.exceptions.WorkerShutdown
+    category: worker-signal
+    note: Inherits from BaseException (via SystemExit), not Exception.
+  - code: WorkerTerminate
+    title: Signals that the worker should terminate immediately.
+    class: celery.exceptions.WorkerTerminate
+    category: worker-signal
+    note: Inherits from BaseException (via SystemExit), not Exception.
+warnings:
+  - code: CeleryWarning
+    title: Base class for all Celery warnings.
+    class: celery.exceptions.CeleryWarning
+  - code: AlwaysEagerIgnored
+    title: send_task ignores task_always_eager option.
+    class: celery.exceptions.AlwaysEagerIgnored
+  - code: DuplicateNodenameWarning
+    title: Multiple workers are using the same nodename.
+    class: celery.exceptions.DuplicateNodenameWarning
+  - code: FixupWarning
+    title: Fixup related warning.
+    class: celery.exceptions.FixupWarning
+  - code: NotConfigured
+    title: Celery hasn't been configured, as no config module has been found.
+    class: celery.exceptions.NotConfigured
+  - code: SecurityWarning
+    title: Potential security issue found.
+    class: celery.exceptions.SecurityWarning
+  - code: CDeprecationWarning
+    title: Warning of deprecation.
+    class: celery.exceptions.CDeprecationWarning
+  - code: CPendingDeprecationWarning
+    title: Warning of pending deprecation.
+    class: celery.exceptions.CPendingDeprecationWarning
+error_count: 28
+warning_count: 8

@@ -1,11 +1,11 @@
-generated: '2026-07-11'
+generated: '2026-09-05'
 method: probed
 source: live DNS/TLS/HTTP probes of apis.yml + OpenAPI hosts
 hosts:
 - host: docs.celeryq.dev
   https: true
   tls_version: TLSv1.3
-  cert_expires: Oct  3 06:44:00 2026 GMT
+  cert_expires: Dec  1 07:27:33 2026 GMT
   hsts: false
 domains:
 - domain: celeryq.dev

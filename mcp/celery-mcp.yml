@@ -1,0 +1,96 @@
+generated: '2026-09-05'
+method: derived
+status: candidate
+source: >-
+  Searched 2026-09-05 for a first-party MCP server: the celery GitHub organization repository list
+  (no MCP repo among 26 repos), the npm registry (celery-node, celery-ts and celery-shoot are
+  independent third-party Node clients; no @celery/* MCP package), PyPI (celery-mcp -> 404), and a
+  GitHub repository search. Tool candidates below are derived from the documented remote-control and
+  inspect command surface at https://docs.celeryq.dev/en/stable/userguide/monitoring.html and
+  https://docs.celeryq.dev/en/stable/reference/cli.html.
+deployment:
+  mode: none
+  endpoint: null
+  install: null
+  package: null
+  auth: unknown
+  verified: searched
+note: >-
+  Celery publishes NO MCP server, hosted or local. This file is a CANDIDATE derivation only, and no
+  `MCPServer` pointer is emitted for it — the pointer would assert an agent surface that does not
+  exist. The candidate tools are one-to-one with real, documented `app.control` / `app.control.inspect`
+  remote-control commands, which are the closest thing Celery has to a callable operations API.
+  Note also that the remote-control transport is limited: the documentation states these commands are
+  supported only on the amqp and redis brokers.
+  A third-party server exists (github.com/Darius1223/celery-flower-mcp, which wraps Flower's HTTP
+  API) but it is neither Celery-published nor Flower-published and is recorded here only so a later
+  pass does not mistake it for first-party.
+candidate_tools:
+  - name: celery_status
+    description: List active worker nodes in the cluster.
+    backing: celery -A proj status / app.control.ping
+  - name: celery_inspect_active
+    description: List tasks currently being executed.
+    backing: app.control.inspect().active()
+  - name: celery_inspect_scheduled
+    description: List scheduled ETA/countdown tasks reserved by workers.
+    backing: app.control.inspect().scheduled()
+  - name: celery_inspect_reserved
+    description: List prefetched tasks waiting to execute.
+    backing: app.control.inspect().reserved()
+  - name: celery_inspect_revoked
+    description: List the history of revoked task ids.
+    backing: app.control.inspect().revoked()
+  - name: celery_inspect_registered
+    description: List task names registered on each worker.
+    backing: app.control.inspect().registered()
+  - name: celery_inspect_stats
+    description: Return worker statistics (pool, prefetch, rusage, totals).
+    backing: app.control.inspect().stats()
+  - name: celery_query_task
+    description: Look up the status and information for one or more task ids.
+    backing: app.control.inspect().query_task(*ids)
+  - name: celery_result
+    description: Fetch the result and state of a task from the result backend.
+    backing: celery -A proj result <task-id> / AsyncResult
+  - name: celery_call_task
+    description: Call a registered task by name with args/kwargs and optional eta, countdown or queue.
+    backing: celery -A proj call <name>
+    consequence: write — enqueues real work; Celery has no idempotency mechanism (see conventions/).
+  - name: celery_revoke
+    description: Revoke a task by id, optionally terminating a running task's process.
+    backing: app.control.revoke(task_id, terminate=..., signal=...)
+    consequence: write
+  - name: celery_rate_limit
+    description: Change the rate limit for a named task at runtime.
+    backing: app.control.rate_limit(task_name, rate)
+    consequence: write
+  - name: celery_time_limit
+    description: Change the soft and hard time limits for a named task at runtime.
+    backing: app.control.time_limit(task_name, soft, hard)
+    consequence: write
+  - name: celery_pool_grow
+    description: Grow the worker pool by N processes.
+    backing: app.control.pool_grow(n)
+    consequence: write
+  - name: celery_pool_shrink
+    description: Shrink the worker pool by N processes.
+    backing: app.control.pool_shrink(n)
+    consequence: write
+  - name: celery_add_consumer
+    description: Tell a worker to start consuming from a queue.
+    backing: app.control.add_consumer(queue)
+    consequence: write
+  - name: celery_cancel_consumer
+    description: Tell a worker to stop consuming from a queue.
+    backing: app.control.cancel_consumer(queue)
+    consequence: write
+  - name: celery_purge
+    description: Purge all messages from the configured task queues.
+    backing: celery -A proj purge
+    consequence: destructive — the documentation warns there is no undo and messages are permanently deleted.
+  - name: celery_enable_events
+    description: Turn the worker event stream on.
+    backing: app.control.enable_events()
+    consequence: write
+tool_count: 19

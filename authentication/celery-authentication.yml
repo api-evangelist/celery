@@ -1,0 +1,67 @@
+generated: '2026-09-05'
+method: searched
+source: >-
+  https://docs.celeryq.dev/en/stable/userguide/security.html,
+  https://docs.celeryq.dev/en/stable/userguide/configuration.html
+summary: >-
+  Celery has no HTTP surface and therefore no API keys, bearer tokens, OAuth flows or
+  securitySchemes. Authentication in Celery is two separate things: credentials on the BROKER and
+  RESULT BACKEND connection URLs, and optional cryptographic signing of the task and event messages
+  themselves so a worker will only execute messages it can verify.
+schemes:
+  - id: broker-credentials
+    type: transport-credentials
+    location: connection URL
+    example_shape: 'amqp://<user>:<password>@<host>:5672/<vhost> or redis://:<password>@<host>:6379/0'
+    tls: broker_use_ssl — end-to-end SSL encryption and authentication where the broker backend supports it
+    docs: https://docs.celeryq.dev/en/stable/userguide/security.html
+    note: >-
+      The documentation is explicit that the broker must be firewalled and that fine-grained broker
+      access control (the RabbitMQ example is given) should be enabled — the broker is the trust
+      boundary, and by default "workers trust that the data they get from the broker hasn't been
+      tampered with".
+  - id: result-backend-credentials
+    type: transport-credentials
+    location: result_backend connection URL
+    note: Same shape as the broker URL; credentials are carried in the DSN.
+  - id: message-signing
+    type: public-key-message-signing
+    serializer: auth
+    library: cryptography (PyPI)
+    mechanism: >-
+      Clients sign each message with a private key; workers verify it against a public certificate.
+      Certificates may be CA-signed or self-signed. The auth serializer signs but does NOT encrypt —
+      the docs state confidentiality must be arranged separately.
+    settings:
+      - name: task_serializer
+        value: auth
+      - name: event_serializer
+        value: auth
+        note: Additionally signs the event protocol.
+      - name: accept_content
+        value: "['auth']"
+        note: Forces workers to accept only signed messages.
+      - name: security_key
+        description: Path to the private key on the filesystem (absolute paths recommended).
+      - name: security_key_password
+        description: Password for an encrypted private key.
+      - name: security_certificate
+        description: Path to this node's certificate.
+      - name: security_cert_store
+        description: Glob of trusted certificates, e.g. /etc/ssl/certs/*.pem.
+      - name: security_digest
+        description: Signing digest algorithm, e.g. sha256.
+    activation: app.setup_security() — also disables all insecure serializers on the worker
+    docs: https://docs.celeryq.dev/en/stable/userguide/security.html
+content_type_allowlist:
+  setting: accept_content
+  default: "['json']"
+  since: 3.0.18
+  note: >-
+    The primary hardening control. pickle is documented as inherently insecure and to be avoided
+    whenever clients are untrusted or unauthenticated; JSON has been the default serializer since 4.0.
+oauth2: false
+openid_connect: false
+api_keys: false
+mutual_tls: partial — broker_use_ssl can carry client certificates where the transport supports it
+scopes_artifact: na — no OAuth surface, so scopes/ is deliberately absent

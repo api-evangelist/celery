@@ -1,0 +1,42 @@
+generated: '2026-09-05'
+method: searched
+source: https://docs.celeryq.dev/en/stable/changelog.html
+also: https://github.com/celery/celery/releases
+scheme: semver-ish MAJOR.MINOR.PATCH, one dated section per release
+current_version: 5.6.3
+current_release_date: '2026-03-26'
+format: >-
+  Sphinx "Change history" page. Each release carries an explicit `release-date` and `release-by`
+  field followed by a "What's Changed" list of merged pull requests with issue numbers — dated and
+  machine-readable enough to diff between versions. Mirrored as GitHub Releases.
+entries:
+  - version: 5.6.3
+    date: '2026-03-26'
+    release_by: Tomer Nosrati
+    breaking: false
+    highlights:
+      - Fix Django worker recursion bug plus defensive checks for pool_cls.__module__ (#10048)
+      - Fix warm shutdown RuntimeError with eventlet>=0.37.0 (#10083, #10123)
+      - Fix worker failing to reconnect after a Redis failover (#10096/#10151)
+      - Fix rpc backend reconnection error (#6912/#10179)
+      - Fix O(K^2) message bloat in a chain of chords (#10171)
+      - Fix NameError with TYPE_CHECKING annotations on Python 3.14+ (PEP 649) (#10165, #10187)
+      - Database backend — add missing index on date_done (#10097/#10098)
+      - Dispatch chain/callbacks on the dedup fast path for redelivered tasks (#10159)
+      - Upgrade pytest-celery to >=1.3.0 and adopt the PYTEST_CELERY_PKG build arg (#10162)
+      - Docs — add compression header to the message protocol docs (#10156)
+  - version: 5.6.2
+    date: '2026-01-04'
+    breaking: false
+  - version: 5.6.1
+    date: '2025-12-29'
+    breaking: false
+  - version: 5.6.0
+    date: '2025-11-30'
+    breaking: false
+    highlights:
+      - 'Minor series release: "Recovery". Preceded by 5.6.0rc1 (2025-11-01) and 5.6.0rc2 (2025-11-22).'
+note: >-
+  Entry detail beyond 5.6.3 is intentionally left to the provider's own page rather than transcribed
+  in bulk — the changelog is long-lived and the recent window is what this artifact is for. Release
+  dates for 5.6.0-5.6.2 were read from the GitHub Releases API, which agrees with the docs page.

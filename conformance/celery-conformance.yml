@@ -1,0 +1,95 @@
+generated: '2026-09-05'
+method: searched
+source: >-
+  https://docs.celeryq.dev/en/stable/internals/protocol.html,
+  https://docs.celeryq.dev/en/stable/getting-started/backends-and-brokers/index.html,
+  https://docs.celeryq.dev/en/stable/userguide/security.html,
+  https://pypi.org/project/amqp/
+scope: >-
+  Celery is a Python library and a broker message protocol. There is no HTTP API, so the usual REST
+  cross-cutting standards (RFC 9457 problem+json, JSON:API, OData, OAuth 2.0, OIDC, FAPI, SCIM) are
+  not merely unimplemented — they are inapplicable. Entries below record what the project actually
+  declares, with the exact spec location as evidence.
+conformance:
+  - id: amqp-0-9-1
+    name: AMQP 0-9-1
+    conforms: true
+    role: consumer of the standard
+    evidence: >-
+      Celery's default and reference broker transport is AMQP, implemented through Kombu on the
+      first-party `amqp` package (py-amqp, "Low-level AMQP client for Python"). The CLI exposes raw
+      AMQP verbs — celery amqp basic.ack / basic.get / basic.publish / exchange.declare /
+      queue.declare / queue.bind / queue.purge — which are AMQP 0-9-1 method names, not Celery
+      inventions.
+    evidence_url: https://docs.celeryq.dev/en/stable/reference/cli.html#celery-amqp
+    package: https://pypi.org/project/amqp/
+  - id: celery-message-protocol-v2
+    name: Celery Message Protocol version 2
+    conforms: true
+    role: publisher of its own protocol
+    evidence: >-
+      Celery publishes a versioned, documented wire format for task messages (headers, properties,
+      body; v1 and v2 both specified, v2 the default since 4.0) at the internals/protocol page. This
+      is the project's own domain contract and the reason a non-Python client can interoperate.
+    evidence_url: https://docs.celeryq.dev/en/stable/internals/protocol.html
+  - id: json-serialization
+    name: JSON (RFC 8259) message serialization
+    conforms: true
+    evidence: >-
+      task_serializer/result_serializer default to `json` since 4.0, and accept_content defaults to
+      ['json']; msgpack, YAML and pickle are opt-in alternatives.
+    evidence_url: https://docs.celeryq.dev/en/stable/userguide/security.html
+  - id: crontab-schedule-syntax
+    name: crontab scheduling syntax
+    conforms: true
+    evidence: >-
+      celery.schedules.crontab implements standard crontab field semantics (minute, hour,
+      day_of_week, day_of_month, month_of_year) for periodic tasks, alongside interval and solar
+      schedules.
+    evidence_url: https://docs.celeryq.dev/en/stable/userguide/periodic-tasks.html
+  - id: x509-message-signing
+    name: X.509 public-key message signing
+    conforms: true
+    evidence: >-
+      The `auth` serializer signs messages with a private key and verifies against a public
+      certificate using the `cryptography` library; security_key / security_certificate /
+      security_cert_store / security_digest are the published settings.
+    evidence_url: https://docs.celeryq.dev/en/stable/userguide/security.html
+  - id: semver
+    name: Semantic versioning
+    conforms: partial
+    evidence: >-
+      Releases are MAJOR.MINOR.PATCH with release candidates, and a published deprecation time-line
+      names the major release that removes each deprecated symbol. The project does not state formal
+      SemVer conformance.
+    evidence_url: https://docs.celeryq.dev/en/stable/internals/deprecation.html
+  - id: oauth2
+    name: OAuth 2.0
+    conforms: false
+    evidence: No OAuth surface; authentication is broker credentials plus optional message signing.
+  - id: oidc
+    name: OpenID Connect
+    conforms: false
+    evidence: Not applicable — no HTTP/identity surface.
+  - id: rfc9457
+    name: RFC 9457 Problem Details for HTTP APIs
+    conforms: false
+    evidence: Not applicable — errors are Python exceptions (see errors/celery-error-codes.yml), not HTTP responses.
+  - id: rfc8594
+    name: RFC 8594 Sunset header
+    conforms: false
+    evidence: Not applicable — no HTTP responses. Deprecation is signalled by CDeprecationWarning in-process.
+domain_standard:
+  market: distributed task queues / asynchronous messaging
+  declared: amqp-0-9-1
+  form: >-
+    The contract itself speaks AMQP: the CLI exposes AMQP 0-9-1 method names verbatim and the
+    first-party `amqp` distribution is a low-level AMQP client. A consumer who already speaks AMQP
+    integrates with the broker Celery talks to without a bespoke connector.
+  evidence_url: https://docs.celeryq.dev/en/stable/reference/cli.html#celery-amqp
+certifications: []
+compliance_programs: []
+note: >-
+  No certifications, attestations or compliance programme are published — Celery is a BSD-licensed
+  open-source library with no operating entity behind a trust centre. No `Compliance` pointer is
+  emitted, because none exists.

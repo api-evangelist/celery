@@ -1,0 +1,130 @@
+generated: '2026-09-05'
+method: searched
+source: >-
+  PyPI registry metadata (pypi.org/pypi/<name>/json) read 2026-09-05, cross-checked against the
+  celery GitHub organization repository list (api.github.com/orgs/celery/repos).
+note: >-
+  Celery is a Python library, not a hosted HTTP service, so the "SDK" surface IS the distribution.
+  The packages below are the first-party distributions published by the celery GitHub organization
+  and the projects Celery depends on directly. Flower is included because the Celery documentation
+  names it the recommended monitor, but it is developed at github.com/mher/flower and is therefore
+  NOT first-party — official is false and it is marked third_party.
+packages:
+  - language: python
+    registry: pypi
+    name: celery
+    url: https://pypi.org/project/celery/
+    install: pip install celery
+    official: true
+    version: 5.6.3
+    published: '2026-03-26'
+    license: BSD-3-Clause
+    requires_python: '>=3.9'
+    repo: https://github.com/celery/celery
+    note: The distributed task queue itself. Carries the `celery` CLI entry point.
+  - language: python
+    registry: pypi
+    name: kombu
+    url: https://pypi.org/project/kombu/
+    install: pip install kombu
+    official: true
+    version: 5.6.2
+    published: '2025-12-29'
+    license: BSD-3-Clause
+    requires_python: '>=3.9'
+    repo: https://github.com/celery/kombu
+    note: Messaging library — the transport/broker abstraction Celery is built on.
+  - language: python
+    registry: pypi
+    name: billiard
+    url: https://pypi.org/project/billiard/
+    install: pip install billiard
+    official: true
+    version: 4.2.4
+    published: '2025-11-30'
+    repo: https://github.com/celery/billiard
+    note: Multiprocessing pool extensions used by the default prefork worker pool.
+  - language: python
+    registry: pypi
+    name: vine
+    url: https://pypi.org/project/vine/
+    install: pip install vine
+    official: true
+    version: 5.1.0
+    published: '2023-11-05'
+    repo: https://github.com/celery/vine
+    note: >-
+      Promises/deferred primitives. Last release 2023-11-05 — the oldest first-party release in the
+      set, though the package is small and stable rather than abandoned.
+  - language: python
+    registry: pypi
+    name: amqp
+    url: https://pypi.org/project/amqp/
+    install: pip install amqp
+    official: true
+    version: 5.3.1
+    published: '2024-11-12'
+    repo: https://github.com/celery/py-amqp
+    note: Low-level AMQP 0-9-1 client (py-amqp) used by Kombu for the RabbitMQ transport.
+  - language: python
+    registry: pypi
+    name: django-celery-beat
+    url: https://pypi.org/project/django-celery-beat/
+    install: pip install django-celery-beat
+    official: true
+    version: 2.9.0
+    published: '2026-02-28'
+    repo: https://github.com/celery/django-celery-beat
+    note: Database-backed periodic task scheduler for Django.
+  - language: python
+    registry: pypi
+    name: django-celery-results
+    url: https://pypi.org/project/django-celery-results/
+    install: pip install django-celery-results
+    official: true
+    version: 2.6.0
+    published: '2025-04-10'
+    repo: https://github.com/celery/django-celery-results
+    note: Django ORM / cache result backend.
+  - language: python
+    registry: pypi
+    name: pytest-celery
+    url: https://pypi.org/project/pytest-celery/
+    install: pip install pytest-celery
+    official: true
+    version: 1.3.0
+    published: '2026-03-02'
+    repo: https://github.com/celery/pytest-celery
+    note: Official pytest plugin — the test/sandbox harness for Celery integration tests.
+  - language: python
+    registry: pypi
+    name: flower
+    url: https://pypi.org/project/flower/
+    install: pip install flower
+    official: false
+    third_party: true
+    version: 2.1.0
+    published: '2026-08-16'
+    repo: https://github.com/mher/flower
+    note: >-
+      Real-time web monitor and administration tool. The Celery monitoring guide names it the
+      recommended monitor and it exposes an HTTP API, but it is maintained at github.com/mher/flower,
+      outside the celery GitHub organization — it is NOT a Celery-published contract and nothing in
+      this repo derives from it.
+registries_checked:
+  - registry: pypi
+    result: 9 packages resolved with version + upload date
+  - registry: npm
+    result: >-
+      no first-party package. celery-node, celery-ts and celery-shoot are independent third-party
+      Node clients, not published by the celery organization.
+  - registry: rubygems
+    result: not applicable — no first-party Ruby client published
+  - registry: crates.io
+    result: not applicable — no first-party Rust client published
+  - registry: maven-central
+    result: not applicable — no first-party JVM client published
+  - registry: nuget
+    result: not applicable — no first-party .NET client published
+  - registry: pkg.go.dev
+    result: not applicable — no first-party Go client published

@@ -1,0 +1,138 @@
+generated: '2026-09-05'
+method: searched
+source: >-
+  https://docs.celeryq.dev/en/stable/userguide/tasks.html,
+  https://docs.celeryq.dev/en/stable/userguide/calling.html,
+  https://docs.celeryq.dev/en/stable/userguide/workers.html,
+  https://docs.celeryq.dev/en/stable/userguide/security.html,
+  https://docs.celeryq.dev/en/stable/internals/protocol.html,
+  https://docs.celeryq.dev/en/stable/internals/deprecation.html
+scope: >-
+  Celery is an in-process Python library and a broker message protocol, not an HTTP API. These
+  conventions therefore describe the RUNTIME semantics a caller must know to drive Celery correctly
+  — message protocol, serialization, delivery guarantees, retry, rate limiting, revocation — not
+  HTTP headers, pagination or status codes, none of which exist here.
+interface:
+  style: python-library + broker-message-protocol
+  transports: [amqp, redis, sqs, gcpubsub, and other Kombu transports]
+  message_protocol: Celery Message Protocol version 2 (default since 4.0)
+  protocol_docs: https://docs.celeryq.dev/en/stable/internals/protocol.html
+  no_http_surface: true
+auth:
+  style: broker-credentials + optional cryptographic message signing
+  docs: https://docs.celeryq.dev/en/stable/userguide/security.html
+  see_also: authentication/celery-authentication.yml
+serialization:
+  default: json
+  supported: [json, pickle, yaml, msgpack, auth]
+  accept_content_setting: accept_content
+  note: >-
+    JSON is the default since 4.0. pickle is documented as inherently insecure and to be avoided
+    with untrusted or unauthenticated clients; accept_content whitelists content types.
+delivery_semantics:
+  guarantee: at-least-once
+  default_ack: early — the message is acknowledged just before the task executes
+  late_ack_option: acks_late (acknowledge after the task returns)
+  redelivery: >-
+    If a worker dies mid-task the broker redelivers the message to another worker, so a task can run
+    more than once. The docs state plainly that "ideally task functions should be idempotent" and
+    that "the worker cannot detect if your tasks are idempotent".
+  docs: https://docs.celeryq.dev/en/stable/userguide/tasks.html
+idempotency:
+  coverage: none
+  mechanism: null
+  header: null
+  scope: []
+  verdict: >-
+    Celery provides NO replay-protection mechanism. There is no idempotency key, no dedup token and
+    no server-side "execute once" guarantee. What the documentation provides is guidance: it tells
+    the developer to write idempotent task bodies and offers acks_late / acks_on_failure_or_timeout
+    as tuning knobs for WHEN the message is acknowledged — which changes the failure mode, not the
+    duplicate-execution risk. An agent calling a Celery task must assume it may run more than once.
+  docs: https://docs.celeryq.dev/en/stable/userguide/tasks.html
+  evidence_quote: >-
+    "Ideally task functions should be idempotent... Since the worker cannot detect if your tasks are
+    idempotent, the default behavior is to acknowledge the message in advance."
+reversibility:
+  grade: verified
+  na: false
+  operations:
+    - action: apply_async / delay (enqueue a task)
+      reversal: revoke
+      operation_id: celery.app.control.Control.revoke
+      cli: celery -A proj control revoke <task_id>
+      window: >-
+        Works only while the task has not yet started executing. Passing terminate=True will kill
+        the child process of an already-running task (prefork and eventlet pools only), which the
+        docs warn may terminate a DIFFERENT task that started in the meantime.
+      persistence: >-
+        The revoked-id list is held in worker memory and is synchronized across the cluster on
+        worker start-up; if ALL workers restart the list vanishes unless the workers were started
+        with --statedb=<path>.
+      transport_requirement: Remote control commands are only supported on the amqp and redis brokers.
+      docs: https://docs.celeryq.dev/en/stable/userguide/workers.html#revoke-revoking-tasks
+    - action: enqueue a task carrying stamped headers
+      reversal: revoke_by_stamped_headers
+      operation_id: celery.app.control.Control.revoke_by_stamped_headers
+      cli: celery -A proj control revoke_by_stamped_headers <header=value>
+      window: >-
+        Same boundary as revoke — before execution unless terminate=True. Added in 5.3. The revoked
+        headers mapping is explicitly documented as NOT persistent across worker restarts.
+      docs: https://docs.celeryq.dev/en/stable/userguide/workers.html#revoke-by-stamped-headers
+    - action: queued messages in a task queue
+      reversal: purge
+      operation_id: celery.app.control.Control.purge
+      cli: celery -A proj purge [-Q queue] [-X queue]
+      window: >-
+        Irreversible once run. The documentation carries an explicit warning: "There's no undo for
+        this operation, and messages will be permanently deleted!"
+      docs: https://docs.celeryq.dev/en/stable/userguide/monitoring.html
+    - action: task result written to the result backend
+      reversal: forget
+      operation_id: celery.result.AsyncResult.forget
+      window: Any time after the result is stored; removes the result from the backend.
+      docs: https://docs.celeryq.dev/en/stable/reference/celery.result.html
+  note: >-
+    Graded `verified` because each reversal path is documented together with the boundary inside
+    which it works (before execution / terminate semantics / no-undo on purge), not merely named.
+retry:
+  manual: self.retry(exc=..., countdown=..., max_retries=...)
+  automatic: autoretry_for=(ExceptionClass,) on the @app.task decorator (added 4.0)
+  backoff: retry_backoff=True — exponential backoff with random jitter, capped at 10 minutes by default
+  tunables: [max_retries, retry_backoff, retry_backoff_max, retry_jitter, retry_kwargs, default_retry_delay]
+  docs: https://docs.celeryq.dev/en/stable/userguide/tasks.html
+rate_limiting:
+  mechanism: per-task rate limit, enforced PER WORKER INSTANCE
+  syntax: 'Task.rate_limit — integer/float = tasks per second, or "N/s", "N/m", "N/h" (e.g. "100/m")'
+  default_setting: task_default_rate_limit (unset by default — rate limiting disabled)
+  runtime_change: celery -A proj control rate_limit <task_name> <rate>
+  caveat: >-
+    Documented explicitly as a per-worker-instance limit, not a global one. To enforce a global rate
+    the docs say you must restrict the task to a dedicated queue.
+  see_also: rate-limits/celery-rate-limits.yml
+time_limits:
+  soft: Task.soft_time_limit — raises SoftTimeLimitExceeded so the task can clean up
+  hard: Task.time_limit — the worker terminates the task process
+  runtime_change: celery -A proj control time_limit <task_name> <soft> <hard>
+routing:
+  keys: [queue, exchange, routing_key]
+  config: task_routes, task_queues
+  docs: https://docs.celeryq.dev/en/stable/userguide/routing.html
+tracing_and_correlation:
+  fields: [uuid (task id), root_id, parent_id, group, chord]
+  note: >-
+    Every task message carries a uuid, and Canvas workflows propagate root_id/parent_id so a task
+    tree can be correlated end to end. These same ids appear on the event stream.
+  see_also: asyncapi/celery-events-asyncapi.yml
+versioning:
+  scheme: MAJOR.MINOR.PATCH
+  current: 5.6.3
+  deprecation_policy: https://docs.celeryq.dev/en/stable/internals/deprecation.html
+  see_also: lifecycle/celery-lifecycle.yml
+error_envelope:
+  kind: python-exception
+  see_also: errors/celery-error-codes.yml
+pagination: na — no HTTP collection endpoints exist
+sparse_fields: na
+metadata:
+  mechanism: task message headers and "stamping" (Canvas stamped headers, 5.3+)

@@ -1,0 +1,61 @@
+generated: '2026-09-05'
+method: searched
+source: >-
+  https://docs.celeryq.dev/en/stable/userguide/testing.html,
+  https://docs.celeryq.dev/en/stable/userguide/configuration.html,
+  https://pypi.org/project/pytest-celery/
+summary: >-
+  Celery ships no hosted console or sandbox tenant — there is no service to log into. What it does
+  publish, and what plays the same role for a consumer, is a documented test mode: an eager
+  execution mode that runs tasks in-process, an in-memory broker/backend transport that needs no
+  RabbitMQ or Redis, and a first-party pytest plugin that stands up real workers and brokers for
+  integration tests.
+hosted_console: false
+test_modes:
+  - id: eager
+    name: Eager execution
+    setting: task_always_eager = True
+    behavior: >-
+      Tasks are executed locally and synchronously by the caller instead of being sent to a broker.
+      apply_async/delay return an EagerResult.
+    companion_setting: task_eager_propagates = True — re-raise exceptions from eagerly executed tasks
+    caveat: >-
+      The documentation warns this is unit-test scaffolding, not a faithful simulation: it does not
+      exercise serialization, routing, the worker pool or the result backend. send_task ignores it
+      and raises AlwaysEagerIgnored.
+  - id: memory-transport
+    name: In-memory broker and backend
+    broker_url: 'memory://'
+    result_backend: 'cache+memory://'
+    behavior: Runs the real message path with no external broker process.
+  - id: pytest-fixtures
+    name: celery.contrib.pytest fixtures
+    activation: 'pytest_plugins = ("celery.contrib.pytest",)'
+    fixtures:
+      - name: celery_app
+        description: A Celery app configured for testing.
+      - name: celery_worker
+        description: An embedded live worker running in a thread for the duration of the test.
+      - name: celery_config
+        description: Override point for the test app configuration.
+      - name: celery_worker_parameters
+        description: Override point for how the embedded worker is started.
+      - name: celery_enable_logging
+        description: Enable worker logging during tests.
+    docs: https://docs.celeryq.dev/en/stable/userguide/testing.html
+  - id: pytest-celery
+    name: pytest-celery plugin
+    package: pytest-celery
+    version: 1.3.0
+    published: '2026-03-02'
+    repo: https://github.com/celery/pytest-celery
+    description: >-
+      Official pytest plugin. Provides container-backed smoke/integration test infrastructure —
+      real workers, real brokers and real result backends — rather than the in-process eager mode.
+test_credentials: none published — there are no test keys, test cards or hosted test tokens, because there is no hosted service
+fixtures:
+  - name: celery.contrib.testing.worker.start_worker
+    description: Context manager that starts a worker in a background thread for an existing app.
+  - name: celery.contrib.testing.mocks
+    description: Mock task and app helpers used by the project's own test suite.
+time_simulation: none — Celery publishes no test-clock equivalent

@@ -1,0 +1,128 @@
+generated: '2026-09-05'
+method: searched
+source: https://docs.celeryq.dev/en/stable/reference/cli.html
+name: celery
+official: true
+description: >-
+  First-party command line interface shipped with the `celery` PyPI distribution. It is the primary
+  operational surface for the project — starting workers and the beat scheduler, calling tasks,
+  inspecting and controlling a running cluster, and administering the broker.
+install:
+  - method: pip
+    command: pip install celery
+    note: The `celery` console-script entry point is installed with the library; there is no separate CLI package.
+entrypoint: celery [OPTIONS] COMMAND [ARGS]...
+global_options:
+  - flag: -A, --app <app>
+    env: CELERY_APP
+  - flag: -b, --broker <broker>
+    env: CELERY_BROKER_URL
+  - flag: --result-backend <result_backend>
+    env: CELERY_RESULT_BACKEND
+  - flag: --loader <loader>
+    env: CELERY_LOADER
+  - flag: --config <config>
+    env: CELERY_CONFIG_MODULE
+  - flag: --workdir <workdir>
+  - flag: -C, --no-color
+    env: CELERY_NO_COLOR
+  - flag: -q, --quiet
+  - flag: --version
+  - flag: --skip-checks
+    env: CELERY_SKIP_CHECKS
+    note: Skip Django core checks on startup.
+env_prefix: >-
+  The documentation states the prefix CELERY_ must be added to the documented environment variable
+  names — APP becomes CELERY_APP, BROKER_URL becomes CELERY_BROKER_URL, and so on.
+commands:
+  - name: worker
+    group: runtime
+    summary: Start a Celery worker instance.
+  - name: beat
+    group: runtime
+    summary: Start the beat periodic task scheduler.
+    options: [--detach, -s/--schedule, -S/--scheduler, --max-interval, -l/--loglevel, -f/--logfile, --pidfile, --uid, --gid, --umask, --executable]
+  - name: multi
+    group: runtime
+    summary: Start, stop and restart multiple worker nodes.
+  - name: call
+    group: tasks
+    summary: Call a task by name.
+    options: [-a/--args, -k/--kwargs, --eta, --countdown, --expires, --serializer, --queue, --exchange, --routing-key]
+  - name: result
+    group: tasks
+    summary: Show the result of a task.
+  - name: purge
+    group: tasks
+    summary: Purge messages from all configured task queues.
+    warning: There is no undo for this operation; messages are permanently deleted.
+    options: [-Q (queues to purge), -X (queues to exclude)]
+  - name: inspect
+    group: cluster
+    summary: Inspect running workers.
+    subcommands: [active, scheduled, reserved, revoked, registered, stats, query_task, active_queues, clock, conf, memdump, memsample, objgraph, ping, report]
+    options: [--destination/-d, --timeout]
+  - name: control
+    group: cluster
+    summary: Send a control command to the workers.
+    subcommands: [enable_events, disable_events, rate_limit, time_limit, revoke, revoke_by_stamped_headers, add_consumer, cancel_consumer, pool_grow, pool_shrink, autoscale, shutdown, election, heartbeat, terminate]
+    options: [--destination/-d, --timeout]
+  - name: status
+    group: cluster
+    summary: List active nodes in this cluster.
+  - name: events
+    group: monitoring
+    summary: Curses event viewer; also starts snapshot cameras and dumps events to stdout.
+    options: [--camera, --frequency, --dump]
+  - name: amqp
+    group: broker
+    summary: AMQP administration shell.
+    subcommands: [basic.ack, basic.get, basic.publish, exchange.declare, exchange.delete, queue.bind, queue.declare, queue.delete, queue.purge, repl]
+  - name: migrate
+    group: broker
+    summary: Migrate tasks from one broker to another (EXPERIMENTAL).
+  - name: list
+    group: introspection
+    summary: Get info from the broker.
+    subcommands: [bindings]
+  - name: graph
+    group: introspection
+    summary: Render dependency graphs in Graphviz dot format.
+    subcommands: [bootsteps, workers]
+  - name: report
+    group: introspection
+    summary: Shows information useful to include in bug-reports.
+  - name: shell
+    group: introspection
+    summary: Drop into a Python shell with the app and all known tasks in locals.
+    options: [--ipython, --bpython, --python, --without-tasks]
+  - name: logtool
+    group: diagnostics
+    summary: Parse Celery log files.
+    subcommands: [debug, errors, incomplete, stats, traces]
+  - name: upgrade
+    group: migration
+    summary: Perform upgrade between versions.
+    subcommands: [settings]
+command_count: 18
+key_flows:
+  - name: Run a worker
+    steps:
+      - celery -A proj worker -l INFO
+  - name: Schedule periodic tasks
+    steps:
+      - celery -A proj beat -l INFO
+  - name: Fire a task from the shell
+    steps:
+      - celery -A proj call tasks.add -a '[4, 4]'
+      - celery -A proj result <task-id>
+  - name: Inspect and control a live cluster
+    steps:
+      - celery -A proj status
+      - celery -A proj inspect active
+      - celery -A proj control rate_limit tasks.add 10/m
+      - celery -A proj control revoke <task-id>
+  - name: Watch the event stream
+    steps:
+      - celery -A proj control enable_events
+      - celery -A proj events --dump

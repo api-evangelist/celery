@@ -1,0 +1,242 @@
+asyncapi: 3.0.0
+info:
+  title: Celery Worker Event Stream
+  version: '5.6.3'
+  description: >-
+    Celery workers publish a monitoring event stream over the configured broker. This document is a
+    faithful transcription of the published Event Reference in the Celery Monitoring and Management
+    Guide — every channel, message and field below is named in that page and nothing has been added.
+
+
+    IMPORTANT PROVENANCE: this AsyncAPI document was AUTHORED BY API EVANGELIST from Celery's
+    documentation. Celery does not publish an AsyncAPI specification. It is a derivation, not a
+    provider artifact — see x-generated-from below.
+
+
+    The stream is off by default: it requires the worker to be started with -E/--task-events, or
+    events to be enabled at runtime with `celery -A proj control enable_events`. task-sent
+    additionally requires the task_send_sent_event setting. Events are published to the `celeryev`
+    topic exchange on AMQP brokers; the event routing key is the event type name.
+  license:
+    name: BSD-3-Clause
+    url: https://github.com/celery/celery/blob/main/LICENSE
+  externalDocs:
+    description: Celery Monitoring and Management Guide — Event Reference
+    url: https://docs.celeryq.dev/en/stable/userguide/monitoring.html#event-reference
+x-generated-from: documentation
+x-authored-by: API Evangelist (not the provider)
+x-source-url: https://docs.celeryq.dev/en/stable/userguide/monitoring.html#event-reference
+x-method: derived
+x-generated: '2026-09-05'
+defaultContentType: application/json
+servers:
+  broker:
+    host: '{broker_host}'
+    protocol: amqp
+    description: >-
+      The broker the Celery application is configured against. Events are carried on the same
+      transport as tasks; on AMQP they are published to the `celeryev` topic exchange. Redis and
+      other Kombu transports carry the same event payloads over their own primitives. The host is a
+      variable because the consumer runs their own broker — Celery hosts nothing.
+    variables:
+      broker_host:
+        description: Hostname of the broker the consumer operates.
+        default: localhost
+channels:
+  taskEvents:
+    address: celeryev
+    title: Task events
+    description: Lifecycle events for individual task executions.
+    messages:
+      taskSent:
+        $ref: '#/components/messages/taskSent'
+      taskReceived:
+        $ref: '#/components/messages/taskReceived'
+      taskStarted:
+        $ref: '#/components/messages/taskStarted'
+      taskSucceeded:
+        $ref: '#/components/messages/taskSucceeded'
+      taskFailed:
+        $ref: '#/components/messages/taskFailed'
+      taskRejected:
+        $ref: '#/components/messages/taskRejected'
+      taskRevoked:
+        $ref: '#/components/messages/taskRevoked'
+      taskRetried:
+        $ref: '#/components/messages/taskRetried'
+  workerEvents:
+    address: celeryev
+    title: Worker events
+    description: Presence and heartbeat events for worker nodes.
+    messages:
+      workerOnline:
+        $ref: '#/components/messages/workerOnline'
+      workerHeartbeat:
+        $ref: '#/components/messages/workerHeartbeat'
+      workerOffline:
+        $ref: '#/components/messages/workerOffline'
+operations:
+  receiveTaskEvents:
+    action: receive
+    channel:
+      $ref: '#/channels/taskEvents'
+    summary: Consume task lifecycle events (celery events, Flower, or a custom EventReceiver).
+  receiveWorkerEvents:
+    action: receive
+    channel:
+      $ref: '#/channels/workerEvents'
+    summary: Consume worker presence and heartbeat events.
+components:
+  messages:
+    taskSent:
+      name: task-sent
+      title: task-sent
+      summary: Sent when a task message is published and the task_send_sent_event setting is enabled.
+      payload:
+        type: object
+        properties:
+          uuid: { type: string, description: Task id. }
+          name: { type: string, description: Registered task name. }
+          args: { type: string, description: Positional arguments. }
+          kwargs: { type: string, description: Keyword arguments. }
+          retries: { type: integer }
+          eta: { type: string, description: Scheduled execution time, if set. }
+          expires: { type: string }
+          queue: { type: string }
+          exchange: { type: string }
+          routing_key: { type: string }
+          root_id: { type: string, description: Id of the root task in the workflow. }
+          parent_id: { type: string, description: Id of the parent task. }
+    taskReceived:
+      name: task-received
+      title: task-received
+      summary: Sent when the worker receives a task.
+      payload:
+        type: object
+        properties:
+          uuid: { type: string }
+          name: { type: string }
+          args: { type: string }
+          kwargs: { type: string }
+          retries: { type: integer }
+          eta: { type: string }
+          hostname: { type: string, description: Nodename of the worker. }
+          timestamp: { type: number, description: Event time-stamp. }
+          root_id: { type: string }
+          parent_id: { type: string }
+    taskStarted:
+      name: task-started
+      title: task-started
+      summary: Sent just before the worker executes the task.
+      payload:
+        type: object
+        properties:
+          uuid: { type: string }
+          hostname: { type: string }
+          timestamp: { type: number }
+          pid: { type: integer, description: Process id of the executing child process. }
+    taskSucceeded:
+      name: task-succeeded
+      title: task-succeeded
+      summary: Sent if the task executed successfully.
+      payload:
+        type: object
+        properties:
+          uuid: { type: string }
+          result: { type: string }
+          runtime:
+            type: number
+            description: >-
+              Time it took to execute the task using the pool — from the task being sent to the
+              worker pool until the pool result handler callback is called.
+          hostname: { type: string }
+          timestamp: { type: number }
+    taskFailed:
+      name: task-failed
+      title: task-failed
+      summary: Sent if the execution of the task failed.
+      payload:
+        type: object
+        properties:
+          uuid: { type: string }
+          exception: { type: string }
+          traceback: { type: string }
+          hostname: { type: string }
+          timestamp: { type: number }
+    taskRejected:
+      name: task-rejected
+      title: task-rejected
+      summary: The task was rejected by the worker, possibly to be re-queued or moved to a dead letter queue.
+      payload:
+        type: object
+        properties:
+          uuid: { type: string }
+          requeue: { type: boolean }
+    taskRevoked:
+      name: task-revoked
+      title: task-revoked
+      summary: >-
+        Sent if the task has been revoked. The documentation notes this is likely to be sent by more
+        than one worker.
+      payload:
+        type: object
+        properties:
+          uuid: { type: string }
+          terminated: { type: boolean, description: True if the task process was terminated. }
+          signum: { type: integer, description: The signal used, when terminated is true. }
+          expired: { type: boolean, description: True if the task expired. }
+    taskRetried:
+      name: task-retried
+      title: task-retried
+      summary: Sent if the task failed, but will be retried in the future.
+      payload:
+        type: object
+        properties:
+          uuid: { type: string }
+          exception: { type: string }
+          traceback: { type: string }
+          hostname: { type: string }
+          timestamp: { type: number }
+    workerOnline:
+      name: worker-online
+      title: worker-online
+      summary: The worker has connected to the broker and is online.
+      payload:
+        type: object
+        properties:
+          hostname: { type: string, description: Nodename of the worker. }
+          timestamp: { type: number, description: Event time-stamp. }
+          freq: { type: number, description: Heartbeat frequency in seconds (float). }
+          sw_ident: { type: string, description: 'Name of worker software (e.g., py-celery).' }
+          sw_ver: { type: string, description: 'Software version (e.g., 2.2.0).' }
+          sw_sys: { type: string, description: 'Operating System (e.g., Linux/Darwin).' }
+    workerHeartbeat:
+      name: worker-heartbeat
+      title: worker-heartbeat
+      summary: >-
+        Sent every minute. If the worker hasn't sent a heartbeat in 2 minutes it is considered to be
+        offline.
+      payload:
+        type: object
+        properties:
+          hostname: { type: string }
+          timestamp: { type: number }
+          freq: { type: number }
+          sw_ident: { type: string }
+          sw_ver: { type: string }
+          sw_sys: { type: string }
+          active: { type: integer, description: Number of currently executing tasks. }
+          processed: { type: integer, description: Total number of tasks processed by this worker. }
+    workerOffline:
+      name: worker-offline
+      title: worker-offline
+      summary: The worker has disconnected from the broker.
+      payload:
+        type: object
+        properties:
+          hostname: { type: string }
+          timestamp: { type: number }
+          freq: { type: number }
+          sw_ident: { type: string }
+          sw_ver: { type: string }
+          sw_sys: { type: string }

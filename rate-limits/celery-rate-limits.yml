@@ -3,11 +3,14 @@ specificationVersion: '0.1'
 schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/RateLimits
 provider: Celery
 providerId: celery
+generated: '2026-09-05'
+method: searched
+source: >-
+  https://docs.celeryq.dev/en/stable/userguide/tasks.html,
+  https://docs.celeryq.dev/en/stable/userguide/workers.html,
+  https://docs.celeryq.dev/en/stable/userguide/configuration.html
 created: '2026-05-04'
-# Provenance stamped 2026-08-11: this artifact was written by the API Evangelist
-# bulk sweep dated 2026-05-04, not harvested from the provider. See roadmap#35.
-method: generated
-modified: '2026-05-04'
+modified: '2026-09-05'
 tags:
   - Asynchronous
   - Distributed Systems
@@ -16,113 +19,62 @@ tags:
   - Python
   - Task Queue
   - Rate Limiting
-  - Quotas
   - Throttling
-description: Machine-readable rate limit definitions for the Celery API surface. Captures per-tier quotas,
-  burst behavior, response signaling, and recovery semantics. Defaults are scaffold values to be replaced
-  with published provider limits.
-headers:
-  limit: X-RateLimit-Limit
-  remaining: X-RateLimit-Remaining
-  reset: X-RateLimit-Reset
-  retryAfter: Retry-After
-  policy: RateLimit-Policy
-responseCodes:
-  throttled: 429
-  quotaExceeded: 429
-  serviceUnavailable: 503
-limits:
-  - tier: free
-    name: Free Tier Default
-    scope: api-key
-    metric: requests_per_minute
-    limit: 10
-    burst: 20
-    timeFrame: minute
-    applies:
-      - Celery Task API
-      - Celery Application API
-      - Celery Canvas API
-      - Celery Beat API
-      - Celery Worker API
-      - Celery Result Backend API
-      - Celery Signals API
-      - Celery Monitoring and Events API
-  - tier: free
-    name: Free Tier Monthly Quota
-    scope: api-key
-    metric: requests_per_month
-    limit: 1000
-    timeFrame: month
-    applies:
-      - Celery Task API
-      - Celery Application API
-      - Celery Canvas API
-      - Celery Beat API
-      - Celery Worker API
-      - Celery Result Backend API
-      - Celery Signals API
-      - Celery Monitoring and Events API
-  - tier: professional
-    name: Professional Tier Default
-    scope: api-key
-    metric: requests_per_minute
-    limit: 100
-    burst: 200
-    timeFrame: minute
-    applies:
-      - Celery Task API
-      - Celery Application API
-      - Celery Canvas API
-      - Celery Beat API
-      - Celery Worker API
-      - Celery Result Backend API
-      - Celery Signals API
-      - Celery Monitoring and Events API
-  - tier: professional
-    name: Professional Tier Monthly Quota
-    scope: api-key
-    metric: requests_per_month
-    limit: 100000
-    timeFrame: month
-    applies:
-      - Celery Task API
-      - Celery Application API
-      - Celery Canvas API
-      - Celery Beat API
-      - Celery Worker API
-      - Celery Result Backend API
-      - Celery Signals API
-      - Celery Monitoring and Events API
-  - tier: enterprise
-    name: Enterprise Negotiated Limit
-    scope: contract
-    metric: requests_per_minute
-    limit: 1000
-    burst: 5000
-    timeFrame: minute
-    applies:
-      - Celery Task API
-      - Celery Application API
-      - Celery Canvas API
-      - Celery Beat API
-      - Celery Worker API
-      - Celery Result Backend API
-      - Celery Signals API
-      - Celery Monitoring and Events API
-policies:
-  - name: Backoff Strategy
-    description: Clients should implement exponential backoff with jitter, honoring the Retry-After header
-      when present.
-  - name: Burst Handling
-    description: Short bursts above the steady-state limit are tolerated up to the documented burst ceiling
-      before throttling engages.
-  - name: Quota Reset
-    description: Monthly quotas reset at the start of each calendar month in UTC. Per-minute and per-second
-      windows reset on a sliding-window basis.
-  - name: Fair Use
-    description: Even on uncapped enterprise tiers, sustained usage that materially impacts shared infrastructure
-      may be subject to fair-use throttling.
+limit_count: 0
+limits: []
+headers: {}
+responseCodes: {}
+description: >-
+  Celery imposes no rate limits on consumers, because there is no hosted service and no HTTP
+  surface: there are no X-RateLimit-* / RateLimit-* response headers, no Retry-After, and no 429,
+  since there are no HTTP responses at all. limit_count is 0 as a measured fact.
+note: >-
+  This file REPLACES a fabricated scaffold written by the 2026-05-04 bulk sweep, which invented
+  10/min free, 100/min professional and 1000/min enterprise API-key limits together with a full set
+  of X-RateLimit-* response headers. None of those exist.
+mechanism:
+  provided: true
+  kind: >-
+    Celery is a rate LIMITER, not a rate-limited service. It publishes a throttling mechanism the
+    operator configures for their own tasks. Recorded here because it is the real, documented
+    rate-limit surface a consumer needs, even though it is not a limit imposed on them.
+  controls:
+    - name: Task.rate_limit
+      scope: per task, per worker instance
+      syntax: >-
+        An integer or float is interpreted as tasks per second; a string may append "/s", "/m" or
+        "/h" — e.g. "100/m" is a hundred tasks a minute, which enforces a minimum 600 ms delay
+        between two task starts on the same worker instance.
+      default: task_default_rate_limit — unset by default, meaning task rate limiting is disabled
+      caveat: >-
+        Documented explicitly as a PER WORKER INSTANCE limit, not a global one. The docs state that
+        to enforce a global rate (for example against a downstream API with a maximum requests per
+        second) you must restrict the task to a dedicated queue.
+      docs: https://docs.celeryq.dev/en/stable/userguide/tasks.html
+    - name: control rate_limit
+      scope: runtime change, per task name
+      syntax: celery -A proj control rate_limit <task_name> <rate>
+      docs: https://docs.celeryq.dev/en/stable/userguide/workers.html
+    - name: worker_prefetch_multiplier
+      scope: per worker
+      description: How many messages a worker prefetches per concurrency slot; the primary flow-control knob.
+      docs: https://docs.celeryq.dev/en/stable/userguide/configuration.html
+    - name: Task.time_limit / Task.soft_time_limit
+      scope: per task
+      description: >-
+        Hard and soft execution ceilings. The soft limit raises SoftTimeLimitExceeded so the task can
+        clean up; the hard limit terminates the task process.
+      docs: https://docs.celeryq.dev/en/stable/userguide/workers.html
+    - name: autoscale
+      scope: per worker
+      description: Dynamically grow and shrink the pool between a min and max concurrency.
+      docs: https://docs.celeryq.dev/en/stable/userguide/workers.html
+  backoff:
+    mechanism: retry_backoff
+    description: >-
+      Exponential backoff with random jitter on automatic retries, capped at a maximum delay of 10
+      minutes by default; tunable with retry_backoff_max and retry_jitter.
+    docs: https://docs.celeryq.dev/en/stable/userguide/tasks.html
 maintainers:
   - FN: Kin Lane
     email: kin@apievangelist.com

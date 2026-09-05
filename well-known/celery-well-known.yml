@@ -1,0 +1,112 @@
+generated: '2026-09-05'
+method: probed
+source: >-
+  Live HTTP probes 2026-09-05 of the named /.well-known/ path list plus /apis.json and /apis.yml on
+  every host this record knows: the docs host (docs.celeryq.dev), the registrable domain
+  (celeryq.dev) and its www host.
+hit_count: 0
+note: >-
+  Celery publishes no /.well-known/ discovery surface. Every named path returned 404 on every host,
+  so NO WellKnown / SecurityTxt / AgentCard pointer is emitted — this file records a measured
+  absence, not a presence. Two host-level findings worth keeping: docs.celeryq.dev is a Read the
+  Docs deployment (CNAME celery.readthedocs.io) whose 404 body is the Read the Docs "Page not found"
+  shell, and the apex celeryq.dev does not resolve at all while www.celeryq.dev now serves a
+  Namecheap parking page — the project website has lapsed and only the documentation subdomain is
+  live. Celery's security disclosure is published on GitHub (SECURITY.md / the repository security
+  policy), not as an RFC 9116 security.txt.
+path_echo_control: passed
+hosts:
+  - host: docs.celeryq.dev
+    resolves: true
+    note: Read the Docs deployment; 404 body is the Read the Docs not-found page (2351 bytes), not a soft-200 catch-all.
+    soft_404_control:
+      path: /.well-known/celery-negative-control-7f3ab91c.json
+      status: 404
+      bytes: 2351
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/openid-configuration
+        status: 404
+      - path: /.well-known/oauth-authorization-server
+        status: 404
+      - path: /.well-known/oauth-protected-resource
+        status: 404
+      - path: /.well-known/api-catalog
+        status: 404
+      - path: /.well-known/ai-plugin.json
+        status: 404
+      - path: /.well-known/apis.json
+        status: 404
+      - path: /apis.json
+        status: 404
+      - path: /apis.yml
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/agent.json
+        status: 404
+      - path: /.well-known/aauth-resource.json
+        status: 404
+  - host: www.celeryq.dev
+    resolves: true
+    note: >-
+      Resolves to parkingpage.namecheap.com — a Namecheap domain parking page, not a Celery
+      property. nginx 404 (564 bytes) on every probed path.
+    soft_404_control:
+      path: /.well-known/celery-negative-control-7f3ab91c.json
+      status: 404
+      bytes: 564
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/openid-configuration
+        status: 404
+      - path: /.well-known/oauth-authorization-server
+        status: 404
+      - path: /.well-known/oauth-protected-resource
+        status: 404
+      - path: /.well-known/api-catalog
+        status: 404
+      - path: /.well-known/ai-plugin.json
+        status: 404
+      - path: /.well-known/apis.json
+        status: 404
+      - path: /apis.json
+        status: 404
+      - path: /apis.yml
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/agent.json
+        status: 404
+      - path: /.well-known/aauth-resource.json
+        status: 404
+  - host: celeryq.dev
+    resolves: false
+    note: Apex domain has no A record; every request failed to connect (curl exit, no HTTP status).
+    documents:
+      - path: /.well-known/security.txt
+        status: 0
+      - path: /.well-known/openid-configuration
+        status: 0
+      - path: /.well-known/oauth-authorization-server
+        status: 0
+      - path: /.well-known/oauth-protected-resource
+        status: 0
+      - path: /.well-known/api-catalog
+        status: 0
+      - path: /.well-known/ai-plugin.json
+        status: 0
+      - path: /.well-known/apis.json
+        status: 0
+      - path: /apis.json
+        status: 0
+      - path: /apis.yml
+        status: 0
+      - path: /.well-known/agent-card.json
+        status: 0
+      - path: /.well-known/agent.json
+        status: 0
+      - path: /.well-known/aauth-resource.json
+        status: 0
