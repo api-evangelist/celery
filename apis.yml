@@ -8,9 +8,10 @@ tags:
   - Asynchronous
   - Distributed Systems
   - Message Queue
-  - Open-Source
+  - Open Source
   - Python
   - Task Queue
+  - Real-Time
 tags_raw:
   - Asynchronous
   - Distributed Systems
@@ -18,17 +19,24 @@ tags_raw:
   - Open Source
   - Python
   - Task Queue
+  - Open-Source
+  - Real-Time
 type: Index
 deliveryModel:
   model: unknown
-  open_source: false
-  commercial: false
+  license_evidence:
+    repo: celery/celery
+    spdx: NOASSERTION
+    stars: 28913
+  open_source: unknown
+  commercial: true
   callable_host: false
   label: Delivery model not determined — needs a product licence on record
   confidence: low
   source:
-  - none
-  generated: '2026-08-28'
+  - pricing
+  - repository-unlicensed
+  generated: '2026-09-25'
   method: derived
 accessModel:
   pricing: freemium
