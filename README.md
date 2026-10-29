@@ -1,4 +1,4 @@
-# Celery (celery)
+# Celery
 
 <!-- API-EVANGELIST-PROVENANCE:BEGIN -->
 > ### About this repository
@@ -64,169 +64,134 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Celery is an open-source distributed task queue for Python. This repository captures the APIs, developer tools, and machine-readable API artifacts for Celery.
+Celery is an open-source distributed task queue for Python. It allows you to run tasks asynchronously in the background, enabling scalable distributed systems with support for multiple message brokers (RabbitMQ, Redis, Amazon SQS) and result backends. Celery provides a rich set of Python programming APIs for defining tasks, composing workflows, scheduling periodic work, executing on workers, and monitoring execution.
 
-**URL:** [Visit APIs.json URL](https://raw.githubusercontent.com/api-evangelist/celery/refs/heads/main/apis.yml)
+**Areas:** Asynchronous · Distributed Systems · Message Queue · Open Source · Python · Task Queue · Real-Time
 
-## Scope
+## Celery on APIs.io
 
-- **Type:** Index
-- **Position:** Consumer
-- **Access:** Open Source
+Everything profiled for Celery is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/celery/](https://apis.io/providers/celery/)** — or go straight to one of the APIs or properties below.
 
-## Tags
+### APIs (8)
 
-- Asynchronous
-- Distributed Systems
-- Message Queue
-- Open Source
-- Python
-- Task Queue
+- [Celery Task API](https://apis.io/apis/celery/celery-task-api/) — Core API for defining and executing distributed tasks in Celery. Supports task decorators, retries, timeouts, rate limiting, and custom task classes.
+- [Celery Application API](https://apis.io/apis/celery/celery-application-api/) — Application configuration and initialization API for Celery, used to configure brokers, result backends, serialization, routing, and task discovery.
+- [Celery Canvas API](https://apis.io/apis/celery/celery-canvas-api/) — Canvas is Celery's workflow composition API for building complex task orchestrations using signatures, chains, groups, chords, maps, starmaps, and chunks.
+- [Celery Beat API](https://apis.io/apis/celery/celery-beat-api/) — Celery Beat is the scheduler for periodic tasks, supporting crontab-style schedules, interval schedules, and solar schedules. It can also be backed by a…
+- [Celery Worker API](https://apis.io/apis/celery/celery-worker-api/) — Worker API for executing distributed tasks with configurable concurrency (prefork, gevent, eventlet, solo, threads), autoscaling, remote control, and signal…
+- [Celery Result Backend API](https://apis.io/apis/celery/celery-result-api/) — Result backend API for storing and retrieving task results and state using backends such as Redis, RPC, database, Memcached, Cassandra, and S3.
+- [Celery Signals API](https://apis.io/apis/celery/celery-signals-api/) — Signals API for hooking into Celery lifecycle events including task, worker, beat, and consumer signals to build extensions and observability.
+- [Celery Monitoring and Events API](https://apis.io/apis/celery/celery-monitoring-api/) — Event streaming and monitoring API for inspecting workers, tasks, and queues. Supports the curses-based celery events monitor and third-party tools such as…
 
-## Timestamps
+### Published properties
 
-- **Created:** 2024-01-15
-- **Modified:** 2026-04-23
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
 
-## APIs
+#### AsyncAPI (1)
 
-### Celery Task API
+Event-driven and webhook contracts.
 
-Core API for defining and executing distributed tasks in Celery. Supports task decorators, retries, timeouts, rate limiting, and custom task classes.
+- [Celery Worker Event Stream](https://apis.io/asyncapis/celery/celery-events-asyncapi/)
 
-**Human URL:** [https://docs.celeryq.dev/en/stable/userguide/tasks.html](https://docs.celeryq.dev/en/stable/userguide/tasks.html)
+#### Event channels (2)
 
-#### Tags
+Individual events and webhooks the provider emits.
 
-- Python, Task Queue, Tasks
+- [celeryev](https://apis.io/channels/celery/celery-worker-event-stream-celeryev/)
+- [celeryev](https://apis.io/channels/celery/celeryev/)
 
-#### Properties
+#### MCP servers (1)
 
-- [Documentation](https://docs.celeryq.dev/en/stable/userguide/tasks.html)
-- [Reference](https://docs.celeryq.dev/en/stable/reference/celery.app.task.html)
-- [GettingStarted](https://docs.celeryq.dev/en/stable/getting-started/)
+Model Context Protocol servers that expose the API to agents.
 
-### Celery Application API
+- [celery-mcp.yml](https://apis.io/servers/celery/celery-mcp-yml/)
 
-Application configuration and initialization API for Celery, used to configure brokers, result backends, serialization, routing, and task discovery.
+#### Security (3)
 
-**Human URL:** [https://docs.celeryq.dev/en/stable/userguide/application.html](https://docs.celeryq.dev/en/stable/userguide/application.html)
+Authentication, trust centre, and vulnerability disclosure.
 
-#### Tags
+- [Celery Authentication](https://apis.io/security/celery/celery-authentication/)
+- [Celery Domain Security](https://apis.io/security/celery/celery-domain-security/)
+- [Celery Vulnerability Disclosure](https://apis.io/security/celery/celery-vulnerability-disclosure/)
 
-- Application, Configuration
+#### Plans and pricing (1)
 
-#### Properties
+Published plans, tiers and prices.
 
-- [Documentation](https://docs.celeryq.dev/en/stable/userguide/application.html)
-- [Reference](https://docs.celeryq.dev/en/stable/reference/celery.html)
-- [Configuration](https://docs.celeryq.dev/en/stable/userguide/configuration.html)
+- [Celery Plans Pricing](https://apis.io/plans/celery/celery-plans-pricing/)
 
-### Celery Canvas API
+#### Rate limits (1)
 
-Canvas is Celery's workflow composition API for building complex task orchestrations using signatures, chains, groups, chords, maps, starmaps, and chunks.
+Published request limits.
 
-**Human URL:** [https://docs.celeryq.dev/en/stable/userguide/canvas.html](https://docs.celeryq.dev/en/stable/userguide/canvas.html)
+- [Celery Rate Limits](https://apis.io/rate-limits/celery/celery-rate-limits/)
 
-#### Tags
+#### FinOps (1)
 
-- Workflows, Chains, Groups, Chords
+What the API costs to run, by operation.
 
-#### Properties
+- [Celery Finops](https://apis.io/finops/celery/celery-finops/)
 
-- [Documentation](https://docs.celeryq.dev/en/stable/userguide/canvas.html)
+## Where to find this API
 
-### Celery Beat API
-
-Celery Beat is the scheduler for periodic tasks, supporting crontab-style schedules, interval schedules, and solar schedules. It can also be backed by a database scheduler for dynamic schedules.
-
-**Human URL:** [https://docs.celeryq.dev/en/stable/userguide/periodic-tasks.html](https://docs.celeryq.dev/en/stable/userguide/periodic-tasks.html)
-
-#### Tags
-
-- Scheduling, Periodic Tasks
-
-#### Properties
-
-- [Documentation](https://docs.celeryq.dev/en/stable/userguide/periodic-tasks.html)
-- [Reference](https://docs.celeryq.dev/en/stable/reference/celery.beat.html)
-
-### Celery Worker API
-
-Worker API for executing distributed tasks with configurable concurrency (prefork, gevent, eventlet, solo, threads), autoscaling, remote control, and signal handling.
-
-**Human URL:** [https://docs.celeryq.dev/en/stable/userguide/workers.html](https://docs.celeryq.dev/en/stable/userguide/workers.html)
-
-#### Tags
-
-- Worker, Execution, Concurrency
-
-#### Properties
-
-- [Documentation](https://docs.celeryq.dev/en/stable/userguide/workers.html)
-- [Reference](https://docs.celeryq.dev/en/stable/reference/celery.worker.html)
-
-### Celery Result Backend API
-
-Result backend API for storing and retrieving task results and state using backends such as Redis, RPC, database, Memcached, Cassandra, and S3.
-
-**Human URL:** [https://docs.celeryq.dev/en/stable/userguide/tasks.html#result-backends](https://docs.celeryq.dev/en/stable/userguide/tasks.html#result-backends)
-
-#### Tags
-
-- Results, State, Storage
-
-#### Properties
-
-- [Documentation](https://docs.celeryq.dev/en/stable/userguide/tasks.html#result-backends)
-- [Reference](https://docs.celeryq.dev/en/stable/reference/celery.result.html)
-
-### Celery Signals API
-
-Signals API for hooking into Celery lifecycle events including task, worker, beat, and consumer signals to build extensions and observability.
-
-**Human URL:** [https://docs.celeryq.dev/en/stable/userguide/signals.html](https://docs.celeryq.dev/en/stable/userguide/signals.html)
-
-#### Tags
-
-- Signals, Events, Extensions
-
-#### Properties
-
-- [Documentation](https://docs.celeryq.dev/en/stable/userguide/signals.html)
-- [Reference](https://docs.celeryq.dev/en/stable/reference/celery.signals.html)
-
-### Celery Monitoring and Events API
-
-Event streaming and monitoring API for inspecting workers, tasks, and queues. Supports the curses-based celery events monitor and third-party tools such as Flower.
-
-**Human URL:** [https://docs.celeryq.dev/en/stable/userguide/monitoring.html](https://docs.celeryq.dev/en/stable/userguide/monitoring.html)
-
-#### Tags
-
-- Monitoring, Events, Observability
-
-#### Properties
-
-- [Documentation](https://docs.celeryq.dev/en/stable/userguide/monitoring.html)
-- [Reference](https://docs.celeryq.dev/en/stable/reference/celery.events.html)
-
-## Common Properties
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
 
 - [Website](https://docs.celeryq.dev/)
 - [Documentation](https://docs.celeryq.dev/en/stable/)
-- [Reference](https://docs.celeryq.dev/en/stable/reference/index.html)
-- [GettingStarted](https://docs.celeryq.dev/en/stable/getting-started/)
-- [GitHub](https://github.com/celery/celery)
-- [PyPI](https://pypi.org/project/celery/)
-- [ChangeLog](https://docs.celeryq.dev/en/stable/changelog.html)
-- [Community](https://github.com/celery/celery/discussions)
-- [Issues](https://github.com/celery/celery/issues)
-- [Contributing](https://docs.celeryq.dev/en/stable/contributing.html)
-- [License](https://github.com/celery/celery/blob/main/LICENSE)
+- [Getting started](https://docs.celeryq.dev/en/stable/getting-started/)
+- [Changelog](https://docs.celeryq.dev/en/stable/changelog.html)
+- [Security](https://github.com/celery/celery/security/policy)
+- [GitHub](https://github.com/celery)
 
-## Maintainers
+## API Evangelist rating
 
-**FN:** Kin Lane
+**Kin Score 37.6** — thin · rubric 0.24.0 · scored 2026-10-17
 
-**Email:** kin@apievangelist.com
+| Facet | Score |
+|---|---|
+| Discoverability | 62.5 |
+| Contract quality | 39.0 |
+| Contract governance | 18.2 |
+| Operational transparency | 42.1 |
+| Developer ergonomics | 64.3 |
+| Access clarity | 0.0 |
+
+**Agent readiness 21.9** — agent-aware
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | — |
+| Reversibility Documented | — |
+| MCP Server | — |
+| Auth Clarity | bearer (partial credit) |
+| Idempotency | — |
+| Error Semantics | documented (partial credit) |
+| OpenAPI Examples | — |
+| Rate Limit Signal | documented (partial credit) |
+| Event Surface Described | derived (partial credit) |
+| Agent Skills | — |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+
+**Regulatory alignment 22.5** — Horizontal (data, software, accessibility, platform)
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/celery/](https://apis.io/providers/celery/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for Celery: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/celery/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
